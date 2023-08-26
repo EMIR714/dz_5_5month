@@ -1,4 +1,4 @@
 export const types = {
-    CHANGE_TITLE: 'CHANGE_TITLE',
-    GET_USERS: 'GET_USERS'
+    PRELOADER_ON: 'PRELOADER_ON',
+    PRELOADER_OFF: 'PRELOADER_OFF'
 }

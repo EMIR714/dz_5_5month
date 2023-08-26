@@ -1,38 +1,38 @@
 import { types } from "../types"
 
-export function changeTitleAction() {
+function preloaderOn () {
     return {
-        type: types.CHANGE_TITLE
+        type: types.PRELOADER_ON
     }
 }
 
-export function asyncFunctionAction() {
-    return function (dispatch) {
-        setTimeout(() => {
-            alert("Hello")
-        }, 2000)
-    }
-}
-
-function getUsersAction(users) {
+function preloaderOff () {
     return {
-        type: types.GET_USERS,
-        payload: users
+        type: types.PRELOADER_OFF
     }
 }
 
-export function fetchUsersAction() {
+export function addUserAction (user) {
     return async function (dispatch) {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users')
-        const data = await response.json()
-        dispatch(getUsersAction(data))
-    }
-}
 
-export function fetchUserOneInfo(id) {
-    return async function (dispatch) {
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
-        const data = await response.json()
-        console.log(data)
+        dispatch(preloaderOn())
+
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type": 'application/json'
+            },
+            body: JSON.stringify(user)
+        }
+
+        const response = await fetch('https://jsonplaceholder.typicode.com/', options)
+
+        if(response.status === 204) {
+            dispatch(preloaderOff())
+        }
+
+        else if(response.status === 404) {
+            dispatch(preloaderOff())
+        }
     }
 }
