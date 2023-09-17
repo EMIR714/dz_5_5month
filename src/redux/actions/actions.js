@@ -1,38 +1,47 @@
-import { types } from "../types"
+import { types } from "../types";
 
-function preloaderOn () {
-    return {
-        type: types.PRELOADER_ON
-    }
+function preloaderOn() {
+  return {
+    type: types.PRELOADER_ON
+  };
 }
 
-function preloaderOff () {
-    return {
-        type: types.PRELOADER_OFF
-    }
+function preloaderOff() {
+  return {
+    type: types.PRELOADER_OFF
+  };
 }
 
-export function addUserAction (user) {
-    return async function (dispatch) {
+export function addUserAction(user) {
+  return async function (dispatch) {
+    dispatch(preloaderOn());
 
-        dispatch(preloaderOn())
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(user)
+    };
 
-        const options = {
-            method: "POST",
-            headers: {
-                "Content-Type": 'application/json'
-            },
-            body: JSON.stringify(user)
-        }
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/users', options);
 
-        const response = await fetch('https://jsonplaceholder.typicode.com/', options)
+      if (response.status === 201 || response.status === 204) {
+        const userData = await response.json(); 
 
-        if(response.status === 204) {
-            dispatch(preloaderOff())
-        }
+        dispatch({
+          type: types.ADD_USER,
+          payload: userData 
+        });
 
-        else if(response.status === 404) {
-            dispatch(preloaderOff())
-        }
+        dispatch(preloaderOff());
+      } else if (response.status === 404) {
+        dispatch(preloaderOff());
+      }
+    } catch (error) {
+      console.error("Ошибка при отправке запроса:", error);
+      dispatch(preloaderOff());
     }
+  };
 }

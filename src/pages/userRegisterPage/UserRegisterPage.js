@@ -68,6 +68,7 @@ function UserRegisterPage() {
                 <Button type='submit' variant='success' className='w-100'>
                     register user
                 </Button>
+                
             </Col>
         </Row>
     </Form>
